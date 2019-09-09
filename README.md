@@ -1,2 +1,2 @@
 # LiveSplit.Leaderboard
-LiveSplit component that brings the SRC leaderboard into LiveSplit
+LiveSplit component that brings your game's Speedrun.com leaderboard into LiveSplit
