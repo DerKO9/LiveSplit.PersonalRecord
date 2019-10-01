@@ -1,2 +1,2 @@
-# LiveSplit.Leaderboard
-LiveSplit component that brings your game's Speedrun.com leaderboard into LiveSplit
+# LiveSplit.PersonalRecord
+LiveSplit component that tracks your rank on the SRC leaderboard
