@@ -2,19 +2,19 @@
 using LiveSplit.UI.Components;
 using System;
 
-[assembly:ComponentFactory(typeof(LiveSplit.Leaderboard.UI.Components.LeaderboardFactory))]
+[assembly:ComponentFactory(typeof(LiveSplit.PersonalRecord.UI.Components.PersonalRecordFactory))]
 
-namespace LiveSplit.Leaderboard.UI.Components
+namespace LiveSplit.PersonalRecord.UI.Components
 {
-    public class LeaderboardFactory : IComponentFactory
+    public class PersonalRecordFactory : IComponentFactory
     {
-        public string ComponentName => "Leaderboard";
+        public string ComponentName => "Personal Record";
 
-        public string Description => "Shows the Leaderboard for the run";
+        public string Description => "Shows your personal record for the run";
 
         public ComponentCategory Category => ComponentCategory.Information;
 
-        public IComponent Create(LiveSplitState state) => new LeaderboardComponent(state);
+        public IComponent Create(LiveSplitState state) => new PersonalRecordComponent(state);
 
         public string UpdateName => ComponentName;
 

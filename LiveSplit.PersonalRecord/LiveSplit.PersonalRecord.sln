@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveSplit.Leaderboard", "LiveSplit.Leaderboard.csproj", "{43C8D8CC-C554-4EF5-9046-7B27D087968F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveSplit.PersonalRecord", "LiveSplit.PersonalRecord.csproj", "{43C8D8CC-C554-4EF5-9046-7B27D087968F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

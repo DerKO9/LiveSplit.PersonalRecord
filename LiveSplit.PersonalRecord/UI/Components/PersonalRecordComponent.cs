@@ -15,13 +15,13 @@ using SpeedrunComSharp;
 using System.Collections.ObjectModel;
 using LiveSplit.Options;
 
-namespace LiveSplit.Leaderboard.UI.Components
+namespace LiveSplit.PersonalRecord.UI.Components
 {
-    public class LeaderboardComponent : IComponent
+    public class PersonalRecordComponent : IComponent
     {
         protected InfoTextComponent InternalComponent { get; set; }
 
-        protected LeaderboardSettings Settings { get; set; }
+        protected PersonalRecordSettings Settings { get; set; }
 
         private GraphicsCache Cache { get; set; }
         private ITimeFormatter TimeFormatter { get; set; }
@@ -29,12 +29,12 @@ namespace LiveSplit.Leaderboard.UI.Components
         private LiveSplitState State { get; set; }
         private TimeStamp LastUpdate { get; set; }
         private TimeSpan RefreshInterval { get; set; }
-        public Record WorldRecord { get; protected set; }
+        public Record PersonalRecord { get; protected set; }
         public ReadOnlyCollection<Record> AllTies { get; protected set; }
         private bool IsLoading { get; set; }
         private SpeedrunComClient Client { get; set; }
 
-        public string ComponentName => "Leaderboard";
+        public string ComponentName => "Personal Record";
 
         public float PaddingTop => InternalComponent.PaddingTop;
         public float PaddingLeft => InternalComponent.PaddingLeft;
@@ -48,7 +48,7 @@ namespace LiveSplit.Leaderboard.UI.Components
 
         public IDictionary<string, Action> ContextMenuControls => null;
 
-        public LeaderboardComponent(LiveSplitState state)
+        public PersonalRecordComponent(LiveSplitState state)
         {
             State = state;
 
@@ -58,8 +58,8 @@ namespace LiveSplit.Leaderboard.UI.Components
             Cache = new GraphicsCache();
             TimeFormatter = new AutomaticPrecisionTimeFormatter();
             LocalTimeFormatter = new RegularTimeFormatter();
-            InternalComponent = new InfoTextComponent("Leaderboard", TimeFormatConstants.DASH);
-            Settings = new LeaderboardSettings()
+            InternalComponent = new InfoTextComponent("PersonalRecord", TimeFormatConstants.DASH);
+            Settings = new PersonalRecordSettings()
             {
                 CurrentState = state
             };
@@ -69,11 +69,11 @@ namespace LiveSplit.Leaderboard.UI.Components
         {
         }
 
-        private void RefreshWorldRecord()
+        private void RefreshPersonalRecord()
         {
             LastUpdate = TimeStamp.Now;
 
-            WorldRecord = null;
+            PersonalRecord = null;
 
             try
             {
@@ -99,7 +99,7 @@ namespace LiveSplit.Leaderboard.UI.Components
 
                     if (leaderboard != null)
                     {
-                        WorldRecord = leaderboard.Records.FirstOrDefault();
+                        PersonalRecord = leaderboard.Records.FirstOrDefault();
                         AllTies = leaderboard.Records;
                     }
                 }
@@ -110,15 +110,15 @@ namespace LiveSplit.Leaderboard.UI.Components
             }
 
             IsLoading = false;
-            ShowWorldRecord(State.Layout.Mode);
+            ShowPersonalRecord(State.Layout.Mode);
         }
 
-        private void ShowWorldRecord(LayoutMode mode)
+        private void ShowPersonalRecord(LayoutMode mode)
         {
             var centeredText = Settings.CenteredText && !Settings.Display2Rows && mode == LayoutMode.Vertical;
-            if (WorldRecord != null)
+            if (PersonalRecord != null)
             {
-                var time = WorldRecord.Times.Primary;
+                var time = PersonalRecord.Times.Primary;
                 var timingMethod = State.CurrentTimingMethod;
                 var game = State.Run.Metadata.Game;
                 if (game != null)
@@ -181,8 +181,8 @@ namespace LiveSplit.Leaderboard.UI.Components
             {
                 if (centeredText)
                 {
-                    InternalComponent.InformationName = "Loading World Record...";
-                    InternalComponent.AlternateNameText = new[] { "Loading WR..." };
+                    InternalComponent.InformationName = "Loading Personal Record...";
+                    InternalComponent.AlternateNameText = new[] { "Loading PR..." };
                 }
                 else
                 {
@@ -193,8 +193,8 @@ namespace LiveSplit.Leaderboard.UI.Components
             {
                 if (centeredText)
                 {
-                    InternalComponent.InformationName = "Unknown World Record";
-                    InternalComponent.AlternateNameText = new[] { "Unknown WR" };
+                    InternalComponent.InformationName = "Unknown Personal Record";
+                    InternalComponent.AlternateNameText = new[] { "Unknown PR" };
                 }
                 else
                 {
@@ -236,13 +236,13 @@ namespace LiveSplit.Leaderboard.UI.Components
             if (Cache.HasChanged)
             {
                 IsLoading = true;
-                WorldRecord = null;
-                ShowWorldRecord(mode);
-                Task.Factory.StartNew(RefreshWorldRecord);
+                PersonalRecord = null;
+                ShowPersonalRecord(mode);
+                Task.Factory.StartNew(RefreshPersonalRecord);
             }
             else if (LastUpdate != null && TimeStamp.Now - LastUpdate >= RefreshInterval)
             {
-                Task.Factory.StartNew(RefreshWorldRecord);
+                Task.Factory.StartNew(RefreshPersonalRecord);
             }
             else
             {
@@ -252,7 +252,7 @@ namespace LiveSplit.Leaderboard.UI.Components
 
                 if (Cache.HasChanged)
                 {
-                    ShowWorldRecord(mode);
+                    ShowPersonalRecord(mode);
                 }
             }
 
@@ -296,10 +296,10 @@ namespace LiveSplit.Leaderboard.UI.Components
             }
             else
             {
-                InternalComponent.InformationName = "World Record";
+                InternalComponent.InformationName = "Personal Record";
                 InternalComponent.AlternateNameText = new[]
                 {
-                    "WR"
+                    "PR"
                 };
                 InternalComponent.NameLabel.HorizontalAlignment = StringAlignment.Near;
                 InternalComponent.ValueLabel.HorizontalAlignment = StringAlignment.Far;

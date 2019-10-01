@@ -7,8 +7,8 @@
     <ProjectGuid>{43C8D8CC-C554-4EF5-9046-7B27D087968F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LiveSplit.Leaderboard</RootNamespace>
-    <AssemblyName>LiveSplit.Leaderboard</AssemblyName>
+    <RootNamespace>LiveSplit.PersonalRecord</RootNamespace>
+    <AssemblyName>LiveSplit.PersonalRecord</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -63,18 +63,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Components\LeaderboardSettings.cs">
+    <Compile Include="UI\Components\PersonalRecordSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Components\LeaderboardSettings.Designer.cs">
-      <DependentUpon>LeaderboardSettings.cs</DependentUpon>
+    <Compile Include="UI\Components\PersonalRecordSettings.Designer.cs">
+      <DependentUpon>PersonalRecordSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Components\LeaderboardComponent.cs" />
-    <Compile Include="UI\Components\LeaderboardFactory.cs" />
+    <Compile Include="UI\Components\PersonalRecordComponent.cs" />
+    <Compile Include="UI\Components\PersonalRecordFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Components\LeaderboardSettings.resx">
-      <DependentUpon>LeaderboardSettings.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Components\PersonalRecordSettings.resx">
+      <DependentUpon>PersonalRecordSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,6 @@
 ﻿namespace LiveSplit.UI.Components
 {
-    partial class LeaderboardSettings
+    partial class PersonalRecordSettings
     {
         /// <summary> 
         /// Required designer variable.
@@ -367,7 +367,7 @@
             this.Name = "LeaderboardSettings";
             this.Padding = new System.Windows.Forms.Padding(7);
             this.Size = new System.Drawing.Size(476, 294);
-            this.Load += new System.EventHandler(this.LeaderboardSettings_Load);
+            this.Load += new System.EventHandler(this.PersonalRecordSettings_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);

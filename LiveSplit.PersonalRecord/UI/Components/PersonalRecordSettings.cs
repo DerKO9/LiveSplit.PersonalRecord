@@ -6,7 +6,7 @@ using LiveSplit.Model;
 
 namespace LiveSplit.UI.Components
 {
-    public partial class LeaderboardSettings : UserControl
+    public partial class PersonalRecordSettings : UserControl
     {
         public Color TextColor { get; set; }
         public bool OverrideTextColor { get; set; }
@@ -32,7 +32,7 @@ namespace LiveSplit.UI.Components
 
         public LayoutMode Mode { get; set; }
 
-        public LeaderboardSettings()
+        public PersonalRecordSettings()
         {
             InitializeComponent();
 
@@ -71,7 +71,7 @@ namespace LiveSplit.UI.Components
             label1.Enabled = btnTextColor.Enabled = chkOverrideTextColor.Checked;
         }
 
-        void LeaderboardSettings_Load(object sender, EventArgs e)
+        void PersonalRecordSettings_Load(object sender, EventArgs e)
         {
             chkOverrideTextColor_CheckedChanged(null, null);
             chkOverrideTimeColor_CheckedChanged(null, null);
