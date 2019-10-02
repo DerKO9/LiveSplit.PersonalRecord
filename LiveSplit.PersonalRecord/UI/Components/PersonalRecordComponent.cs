@@ -1,19 +1,19 @@
-﻿using LiveSplit.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+using LiveSplit.Model;
+using LiveSplit.Options;
 using LiveSplit.TimeFormatters;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using LiveSplit.Web.Share;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
 using SpeedrunComSharp;
-using System.Collections.ObjectModel;
-using LiveSplit.Options;
 
 namespace LiveSplit.PersonalRecord.UI.Components
 {
@@ -27,10 +27,10 @@ namespace LiveSplit.PersonalRecord.UI.Components
         private ITimeFormatter TimeFormatter { get; set; }
         private RegularTimeFormatter LocalTimeFormatter { get; set; }
         private LiveSplitState State { get; set; }
+        private Image RankImage { get; set; }
         private TimeStamp LastUpdate { get; set; }
         private TimeSpan RefreshInterval { get; set; }
         public Record PersonalRecord { get; protected set; }
-        public ReadOnlyCollection<Record> AllTies { get; protected set; }
         private bool IsLoading { get; set; }
         private SpeedrunComClient Client { get; set; }
 
@@ -93,14 +93,13 @@ namespace LiveSplit.PersonalRecord.UI.Components
                     }
 
                     var leaderboard = Client.Leaderboards.GetLeaderboardForFullGameCategory(State.Run.Metadata.Game.ID, State.Run.Metadata.Category.ID, 
-                        top: 1,
                         platformId: platformFilter, regionId: regionFilter, 
                         emulatorsFilter: emulatorFilter, variableFilters: variableFilter);
 
                     if (leaderboard != null)
                     {
-                        PersonalRecord = leaderboard.Records.FirstOrDefault();
-                        AllTies = leaderboard.Records;
+                        PersonalRecord = leaderboard.Records.Where(r => r.Player.Name.ToLower() == "ninpalk".ToLower()).FirstOrDefault();
+                        RankImage = GetTrophyImage();
                     }
                 }
             }
@@ -111,6 +110,40 @@ namespace LiveSplit.PersonalRecord.UI.Components
 
             IsLoading = false;
             ShowPersonalRecord(State.Layout.Mode);
+        }
+
+        private Image GetTrophyImage()
+        {
+            if (PersonalRecord != null)
+            {
+                Uri uri;
+                switch (PersonalRecord.Rank)
+                {
+                    case 1:
+                        uri = PersonalRecord.Game.Assets.TrophyFirstPlace.Uri;
+                        break;
+                    case 2:
+                        uri = PersonalRecord.Game.Assets.TrophySecondPlace.Uri;
+                        break;
+                    case 3:
+                        uri = PersonalRecord.Game.Assets.TrophyThirdPlace.Uri;
+                        break;
+                    case 4:
+                        uri = PersonalRecord.Game.Assets.TrophyFourthPlace.Uri;
+                        break;
+                    default:
+                        return null;
+                }
+
+                using (var wc = new WebClient())
+                {
+                    return Image.FromStream(wc.OpenRead(uri));
+                };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private void ShowPersonalRecord(LayoutMode mode)
@@ -133,16 +166,13 @@ namespace LiveSplit.PersonalRecord.UI.Components
                 if (isLoggedIn)
                     userName = SpeedrunCom.Client.Profile.Name;
 
-                var runners = string.Join(", ", AllTies.Select(t => string.Join(" & ", t.Players.Select(p =>
-                    isLoggedIn && p.Name == userName ? "me" : p.Name))));
-                var tieCount = AllTies.Count;
+                var runners = string.Join(", ", PersonalRecord.Players.Select(p => p.Name));
 
                 var finalTime = GetPBTime(timingMethod);
                 if (IsPBTimeLower(finalTime, time, game != null ? game.Ruleset.ShowMilliseconds : false))
                 {
                     formatted = LocalTimeFormatter.Format(finalTime);
                     runners = State.Run.Metadata.Category.Players.Value > 1 ? "us" : "me";
-                    tieCount = 1;
                 }
 
                 if (centeredText)
@@ -154,27 +184,12 @@ namespace LiveSplit.PersonalRecord.UI.Components
                     textList.Add(string.Format("WR: {0} by {1}", formatted, runners));
                     textList.Add(string.Format("WR is {0} by {1}", formatted, runners));
 
-                    if (tieCount > 1)
-                    {
-                        textList.Add(string.Format("World Record is {0} ({1}-way tie)", formatted, tieCount));
-                        textList.Add(string.Format("World Record: {0} ({1}-way tie)", formatted, tieCount));
-                        textList.Add(string.Format("WR: {0} ({1}-way tie)", formatted, tieCount));
-                        textList.Add(string.Format("WR is {0} ({1}-way tie)", formatted, tieCount));
-                    }
-
                     InternalComponent.InformationName = textList.First();
                     InternalComponent.AlternateNameText = textList;
                 }
                 else
                 {
-                    if (tieCount > 1)
-                    {
-                        InternalComponent.InformationValue = string.Format("{0} ({1}-way tie)", formatted, tieCount);
-                    }
-                    else
-                    {
-                        InternalComponent.InformationValue = string.Format("{0} by {1}", formatted, runners);
-                    }
+                    InternalComponent.InformationValue = string.Format("{0} by {1}", formatted, runners);
                 }
             }
             else if (IsLoading)
@@ -318,6 +333,8 @@ namespace LiveSplit.PersonalRecord.UI.Components
             DrawBackground(g, state, HorizontalWidth, height);
             PrepareDraw(state, LayoutMode.Horizontal);
             InternalComponent.DrawHorizontal(g, state, height, clipRegion);
+            g.DrawEllipse(new Pen(Color.Aqua), new Rectangle(new Point(10,0), new Size((int)HorizontalWidth - 10, (int)height)));
+            if (RankImage != null) g.DrawImage(RankImage, new Point(10, (int)height/2 - 50));
         }
 
         public void DrawVertical(Graphics g, LiveSplitState state, float width, System.Drawing.Region clipRegion)
