@@ -27,7 +27,9 @@ namespace LiveSplit.PersonalRecord.UI.Components
         private ITimeFormatter TimeFormatter { get; set; }
         private RegularTimeFormatter LocalTimeFormatter { get; set; }
         private LiveSplitState State { get; set; }
-        private Image RankImage { get; set; }
+        private Image TrophyIcon { get; set; }
+        private Image CountryFlagIcon { get; set; }
+        private Image UserIcon { get; set; }
         private TimeStamp LastUpdate { get; set; }
         private TimeSpan RefreshInterval { get; set; }
         public Record PersonalRecord { get; protected set; }
@@ -98,8 +100,10 @@ namespace LiveSplit.PersonalRecord.UI.Components
 
                     if (leaderboard != null)
                     {
-                        PersonalRecord = leaderboard.Records.Where(r => r.Player.Name.ToLower() == "ninpalk".ToLower()).FirstOrDefault();
-                        RankImage = GetTrophyImage();
+                        PersonalRecord = leaderboard.Records.Where(r => r.Player.Name.ToLower() == "DerKO".ToLower()).FirstOrDefault(); 
+                        TrophyIcon = GetTrophyIcon();
+                        CountryFlagIcon = GetCountryFlagIcon();
+                        UserIcon = GetUserIcon();
                     }
                 }
             }
@@ -112,7 +116,7 @@ namespace LiveSplit.PersonalRecord.UI.Components
             ShowPersonalRecord(State.Layout.Mode);
         }
 
-        private Image GetTrophyImage()
+        private Image GetTrophyIcon()
         {
             if (PersonalRecord != null)
             {
@@ -135,6 +139,40 @@ namespace LiveSplit.PersonalRecord.UI.Components
                         return null;
                 }
 
+                using (var wc = new WebClient())
+                {
+                    return Image.FromStream(wc.OpenRead(uri));
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private Image GetCountryFlagIcon()
+        {
+            if (PersonalRecord != null)
+            {
+                var countryCode = PersonalRecord.Player.User.Location.Country.Code;
+                Uri uri = new Uri($"https://www.speedrun.com/images/flags/{countryCode}.png");
+                using (var wc = new WebClient())
+                {
+                    return Image.FromStream(wc.OpenRead(uri));
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private Image GetUserIcon()
+        {
+            if (PersonalRecord != null)
+            {
+                var userName = PersonalRecord.Player.User.Name;
+                Uri uri = new Uri($"https://www.speedrun.com/themes/user/{userName}/icon.png");
                 using (var wc = new WebClient())
                 {
                     return Image.FromStream(wc.OpenRead(uri));
@@ -334,7 +372,7 @@ namespace LiveSplit.PersonalRecord.UI.Components
             PrepareDraw(state, LayoutMode.Horizontal);
             InternalComponent.DrawHorizontal(g, state, height, clipRegion);
             g.DrawEllipse(new Pen(Color.Aqua), new Rectangle(new Point(10,0), new Size((int)HorizontalWidth - 10, (int)height)));
-            if (RankImage != null) g.DrawImage(RankImage, new Point(10, (int)height/2 - 50));
+            if (UserIcon != null) g.DrawImage(UserIcon, new Point(10, (int)height/2 - 50));
         }
 
         public void DrawVertical(Graphics g, LiveSplitState state, float width, System.Drawing.Region clipRegion)
