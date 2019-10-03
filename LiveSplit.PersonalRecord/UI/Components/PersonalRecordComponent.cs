@@ -20,6 +20,7 @@ namespace LiveSplit.PersonalRecord.UI.Components
     public class PersonalRecordComponent : IComponent
     {
         protected InfoTextComponent InternalComponent { get; set; }
+        protected SimpleLabel SimpleLabel { get; set; }
 
         protected PersonalRecordSettings Settings { get; set; }
 
@@ -139,10 +140,7 @@ namespace LiveSplit.PersonalRecord.UI.Components
                         return null;
                 }
 
-                using (var wc = new WebClient())
-                {
-                    return Image.FromStream(wc.OpenRead(uri));
-                };
+                return GetImage(uri);
             }
             else
             {
@@ -155,11 +153,8 @@ namespace LiveSplit.PersonalRecord.UI.Components
             if (PersonalRecord != null)
             {
                 var countryCode = PersonalRecord.Player.User.Location.Country.Code;
-                Uri uri = new Uri($"https://www.speedrun.com/images/flags/{countryCode}.png");
-                using (var wc = new WebClient())
-                {
-                    return Image.FromStream(wc.OpenRead(uri));
-                };
+                var uri = new Uri($"https://www.speedrun.com/images/flags/{countryCode}.png");
+                return GetImage(uri);
             }
             else
             {
@@ -172,16 +167,28 @@ namespace LiveSplit.PersonalRecord.UI.Components
             if (PersonalRecord != null)
             {
                 var userName = PersonalRecord.Player.User.Name;
-                Uri uri = new Uri($"https://www.speedrun.com/themes/user/{userName}/icon.png");
-                using (var wc = new WebClient())
-                {
-                    return Image.FromStream(wc.OpenRead(uri));
-                };
+                var uri = new Uri($"https://www.speedrun.com/themes/user/{userName}/icon.png");
+                return GetImage(uri);
             }
             else
             {
                 return null;
             }
+        }
+
+        private Image GetImage(Uri uri)
+        {
+            using (var wc = new WebClient())
+            {
+                try
+                {
+                    return Image.FromStream(wc.OpenRead(uri));
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            };
         }
 
         private void ShowPersonalRecord(LayoutMode mode)
@@ -217,10 +224,10 @@ namespace LiveSplit.PersonalRecord.UI.Components
                 {
                     var textList = new List<string>();
 
-                    textList.Add(string.Format("World Record is {0} by {1}", formatted, runners));
-                    textList.Add(string.Format("World Record: {0} by {1}", formatted, runners));
-                    textList.Add(string.Format("WR: {0} by {1}", formatted, runners));
-                    textList.Add(string.Format("WR is {0} by {1}", formatted, runners));
+                    textList.Add(string.Format("Personal Record is {0} by {1}", formatted, runners));
+                    textList.Add(string.Format("Personal Record: {0} by {1}", formatted, runners));
+                    textList.Add(string.Format("PR: {0} by {1}", formatted, runners));
+                    textList.Add(string.Format("PR is {0} by {1}", formatted, runners));
 
                     InternalComponent.InformationName = textList.First();
                     InternalComponent.AlternateNameText = textList;
@@ -380,6 +387,19 @@ namespace LiveSplit.PersonalRecord.UI.Components
             DrawBackground(g, state, width, VerticalHeight);
             PrepareDraw(state, LayoutMode.Vertical);
             InternalComponent.DrawVertical(g, state, width, clipRegion);
+
+            SimpleLabel = new SimpleLabel();
+            SimpleLabel.Text = "TEST";
+            SimpleLabel.HorizontalAlignment = StringAlignment.Near;
+            SimpleLabel.Font = state.LayoutSettings.TextFont;
+            SimpleLabel.ForeColor = state.LayoutSettings.TextColor;
+            SimpleLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
+            SimpleLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
+            SimpleLabel.Width = width - 10;
+            SimpleLabel.Height = VerticalHeight;
+            SimpleLabel.X = 5;
+            SimpleLabel.Y = 0;
+            SimpleLabel.Draw(g);
         }
 
         public Control GetSettingsControl(LayoutMode mode)
