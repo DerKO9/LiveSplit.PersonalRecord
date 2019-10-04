@@ -21,6 +21,9 @@ namespace LiveSplit.PersonalRecord.UI.Components
     {
         protected InfoTextComponent InternalComponent { get; set; }
         protected SimpleLabel SimpleLabel { get; set; }
+        protected SimpleLabel Place { get; set; }
+        protected SimpleLabel User { get; set; }
+        protected SimpleLabel Time { get; set; }
 
         protected PersonalRecordSettings Settings { get; set; }
 
@@ -101,7 +104,7 @@ namespace LiveSplit.PersonalRecord.UI.Components
 
                     if (leaderboard != null)
                     {
-                        PersonalRecord = leaderboard.Records.Where(r => r.Player.Name.ToLower() == "DerKO".ToLower()).FirstOrDefault(); 
+                        PersonalRecord = leaderboard.Records.Where(r => r.Player.Name.ToLower() == "derko".ToLower()).FirstOrDefault(); 
                         TrophyIcon = GetTrophyIcon();
                         CountryFlagIcon = GetCountryFlagIcon();
                         UserIcon = GetUserIcon();
@@ -386,18 +389,51 @@ namespace LiveSplit.PersonalRecord.UI.Components
         {
             DrawBackground(g, state, width, VerticalHeight);
             PrepareDraw(state, LayoutMode.Vertical);
-            InternalComponent.DrawVertical(g, state, width, clipRegion);
+            //InternalComponent.DrawVertical(g, state, width, clipRegion);
+
+            if (TrophyIcon != null) g.DrawImage(TrophyIcon, 10, VerticalHeight / 2 - 10, 20, 20);
 
             SimpleLabel = new SimpleLabel();
-            SimpleLabel.Text = "TEST";
+            SimpleLabel.Text = "1st";
             SimpleLabel.HorizontalAlignment = StringAlignment.Near;
+            SimpleLabel.VerticalAlignment = StringAlignment.Center;
             SimpleLabel.Font = state.LayoutSettings.TextFont;
             SimpleLabel.ForeColor = state.LayoutSettings.TextColor;
             SimpleLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
             SimpleLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
             SimpleLabel.Width = width - 10;
             SimpleLabel.Height = VerticalHeight;
-            SimpleLabel.X = 5;
+            SimpleLabel.X = 30;
+            SimpleLabel.Y = 0;
+            SimpleLabel.Draw(g);
+
+            if (CountryFlagIcon != null) g.DrawImage(CountryFlagIcon, width/2 - 50, VerticalHeight/2 - (0.33f * CountryFlagIcon.Height)/2, 0.33f * CountryFlagIcon.Width, 0.33f * CountryFlagIcon.Height);
+
+            SimpleLabel = new SimpleLabel();
+            SimpleLabel.Text = "hedweg";
+            SimpleLabel.HorizontalAlignment = StringAlignment.Center;
+            SimpleLabel.VerticalAlignment = StringAlignment.Center;
+            SimpleLabel.Font = state.LayoutSettings.TextFont;
+            SimpleLabel.ForeColor = state.LayoutSettings.TextColor;
+            SimpleLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
+            SimpleLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
+            SimpleLabel.Width = width - 10;
+            SimpleLabel.Height = VerticalHeight;
+            SimpleLabel.X = 10;
+            SimpleLabel.Y = 0;
+            SimpleLabel.Draw(g);
+
+            SimpleLabel = new SimpleLabel();
+            SimpleLabel.Text = "42:01";
+            SimpleLabel.HorizontalAlignment = StringAlignment.Far;
+            SimpleLabel.VerticalAlignment = StringAlignment.Center;
+            SimpleLabel.Font = state.LayoutSettings.TextFont;
+            SimpleLabel.ForeColor = state.LayoutSettings.TextColor;
+            SimpleLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
+            SimpleLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
+            SimpleLabel.Width = width - 10;
+            SimpleLabel.Height = VerticalHeight;
+            SimpleLabel.X = -10;
             SimpleLabel.Y = 0;
             SimpleLabel.Draw(g);
         }
